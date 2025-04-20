@@ -30,7 +30,7 @@ const Index = () => {
         </main>
         <Footer />
         <footer className="py-6 mt-10 border-t text-center text-sm text-muted-foreground">
-          <p>© 2025 StoryAI Spark. All rights reserved.</p>
+          <p>© 2025 SnapAI. All rights reserved.</p>
         </footer>
       </div>
     </StoreProvider>
