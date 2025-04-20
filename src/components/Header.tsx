@@ -30,7 +30,7 @@ export default function Header() {
     <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-border">
       <div className="flex items-center">
         <span className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-          StoryAI Spark
+          SnapAI
         </span>
       </div>
       
