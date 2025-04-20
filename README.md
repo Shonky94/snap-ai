@@ -1,73 +1,51 @@
-# Welcome to your Lovable project
 
-## Project info
+# StoryAI Spark - AI-generated Captions and Visual Enhancements
 
-**URL**: https://lovable.dev/projects/38185ff5-cfeb-423d-ada6-6ab26334df1c
+An AI-powered application that helps content creators enhance their social media stories with automated caption generation and visual enhancement suggestions.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- **Media Upload**: Upload images and videos for AI analysis
+- **AI Caption Generation**: Get AI-generated caption suggestions for your media
+- **Visual Enhancement Recommendations**: Receive AI suggestions for filters, effects, and other visual enhancements
+- **User Authentication**: Simple login system with user/admin roles
+- **Media Management**: View, edit, and delete your uploaded media
+- **Responsive Design**: Works seamlessly on mobile and desktop
 
-**Use Lovable**
+## Technology Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/38185ff5-cfeb-423d-ada6-6ab26334df1c) and start prompting.
+- **Frontend**: React, TypeScript, Tailwind CSS
+- **UI Components**: shadcn/ui
+- **State Management**: React Context API
+- **Storage**: LocalStorage (for demo purposes)
+- **Animation**: Custom CSS animations
 
-Changes made via Lovable will be committed automatically to this repo.
+## Getting Started
 
-**Use your preferred IDE**
+1. Clone this repository
+2. Install dependencies: `npm install`
+3. Start the development server: `npm run dev`
+4. Open your browser and navigate to the local development URL
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Usage
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. **Sign In** (Optional): Use any name and email (include "admin" in the email to get admin privileges)
+2. **Upload Media**: Drag and drop or click to upload an image or video
+3. **View AI Suggestions**: After processing, view the generated caption and enhancement suggestions
+4. **Edit & Manage**: Edit captions or delete media as needed
 
-Follow these steps:
+## Future Enhancements
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- Integration with a real AI model for more accurate caption generation and visual analysis
+- Backend implementation with proper user authentication and database storage
+- Social media sharing capabilities
+- Enhanced visual effects and filters
+- Analytics dashboard for content performance
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## Note
 
-# Step 3: Install the necessary dependencies.
-npm i
+This is a demo application using simulated AI responses. In a production environment, it would integrate with actual AI services for more accurate and personalized suggestions.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## License
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/38185ff5-cfeb-423d-ada6-6ab26334df1c) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+© 2025 StoryAI Spark. All rights reserved.
