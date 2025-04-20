@@ -1,5 +1,5 @@
 
-# StoryAI Spark - AI-generated Captions and Visual Enhancements
+# SnapAI - AI-generated Captions and Visual Enhancements
 
 An AI-powered application that helps content creators enhance their social media stories with automated caption generation and visual enhancement suggestions.
 
@@ -48,4 +48,4 @@ This is a demo application using simulated AI responses. In a production environ
 
 ## License
 
-© 2025 StoryAI Spark. All rights reserved.
+© 2025 SnapAI. All rights reserved.
