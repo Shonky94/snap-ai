@@ -18,10 +18,15 @@ async function callAIGenerate(
       description: "Getting AI-powered suggestions...",
     });
     
-    console.log("Calling AI generate with fileType:", fileType);
+    console.log("Calling AI generate with fileType:", fileType, "and uniqueId:", Date.now());
     
     const { data, error } = await supabase.functions.invoke("generate-captions", {
-      body: { fileType, prompt, extraContext },
+      body: { 
+        fileType, 
+        prompt, 
+        extraContext,
+        uniqueId: Date.now() // Add unique timestamp to avoid response caching
+      },
     });
     
     if (error) {
@@ -70,9 +75,9 @@ async function callAIGenerate(
     };
   } catch (error) {
     console.error("AI generation failed:", error);
-    // Return fallback content for graceful degradation
+    // Return fallback content with timestamp for uniqueness
     return {
-      caption: "An amazing visual worth sharing!",
+      caption: `An amazing visual worth sharing! (${new Date().toLocaleTimeString()})`,
       enhancementSuggestions: [
         {
           id: generateId(),
@@ -105,14 +110,14 @@ export const generateAICaption = async (
         ? "video"
         : "image";
     
-    console.log("Generating caption for", fileType);
+    console.log("Generating caption for", fileType, "with uniqueId", Date.now());
     const { caption } = await callAIGenerate(fileType);
     console.log("Generated caption:", caption);
     
     return caption;
   } catch (error) {
     console.error("Caption generation failed:", error);
-    return "Share your story with this amazing visual!";
+    return `Share your story with this amazing visual! (${new Date().toLocaleTimeString()})`;
   }
 };
 
@@ -129,7 +134,7 @@ export const analyzeVisualContent = async (
         ? "video"
         : "image";
     
-    console.log("Analyzing visual content for", fileType);
+    console.log("Analyzing visual content for", fileType, "with uniqueId", Date.now());
     const { enhancementSuggestions } = await callAIGenerate(fileType);
     console.log("Generated suggestions:", enhancementSuggestions);
     
@@ -140,13 +145,13 @@ export const analyzeVisualContent = async (
       {
         id: generateId(),
         type: "filter",
-        name: "Vibrant Boost",
+        name: `Vibrant Boost (${generateId().substring(0,4)})`,
         description: "Enhance colors for more visual impact"
       },
       {
         id: generateId(),
         type: "effect",
-        name: "Soft Glow",
+        name: `Soft Glow (${generateId().substring(0,4)})`,
         description: "Add a gentle luminous effect"
       }
     ];
