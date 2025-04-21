@@ -76,12 +76,16 @@ const MediaCard = ({ item }: MediaCardProps) => {
     <Card className="overflow-hidden transition-all duration-300 hover:shadow-md fade-in-up hover-scale">
       <MediaPreview item={item} />
       <CardHeader className="p-4">
-        <CardTitle className="text-lg font-semibold">
-          {item.caption}
-        </CardTitle>
-        <CardDescription>
-          {formatDistanceToNow(item.createdAt, { addSuffix: true })}
-        </CardDescription>
+        <div className="flex justify-between items-start">
+          <div className="space-y-1">
+            <p className="text-sm text-muted-foreground">
+              {formatDistanceToNow(item.createdAt, { addSuffix: true })}
+            </p>
+            <CardTitle className="text-lg font-medium">
+              {item.caption || "No caption available"}
+            </CardTitle>
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="p-4 pt-0">
         <EnhancementPreview suggestions={item.enhancementSuggestions} />

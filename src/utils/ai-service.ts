@@ -18,6 +18,8 @@ async function callAIGenerate(
       description: "Getting AI-powered suggestions...",
     });
     
+    console.log("Calling AI generate with fileType:", fileType);
+    
     const { data, error } = await supabase.functions.invoke("generate-captions", {
       body: { fileType, prompt, extraContext },
     });
@@ -31,6 +33,8 @@ async function callAIGenerate(
       });
       throw error;
     }
+    
+    console.log("AI response data:", data);
     
     if (!data || (!data.caption && !data.enhancementSuggestions)) {
       console.error("Empty AI response:", data);
@@ -56,6 +60,9 @@ async function callAIGenerate(
       title: "AI Complete",
       description: "Generated caption and enhancement suggestions",
     });
+    
+    console.log("Processed AI data - caption:", data.caption);
+    console.log("Processed AI data - suggestions:", enhancementSuggestions);
     
     return {
       caption: data.caption || "",
@@ -97,7 +104,11 @@ export const generateAICaption = async (
         : imageData.type.startsWith("video/")
         ? "video"
         : "image";
+    
+    console.log("Generating caption for", fileType);
     const { caption } = await callAIGenerate(fileType);
+    console.log("Generated caption:", caption);
+    
     return caption;
   } catch (error) {
     console.error("Caption generation failed:", error);
@@ -117,7 +128,11 @@ export const analyzeVisualContent = async (
         : imageData.type.startsWith("video/")
         ? "video"
         : "image";
+    
+    console.log("Analyzing visual content for", fileType);
     const { enhancementSuggestions } = await callAIGenerate(fileType);
+    console.log("Generated suggestions:", enhancementSuggestions);
+    
     return enhancementSuggestions;
   } catch (error) {
     console.error("Visual analysis failed:", error);
