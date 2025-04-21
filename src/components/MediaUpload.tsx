@@ -5,6 +5,7 @@ import { useStore } from "@/context/StoreContext";
 import { processMediaFile } from "@/utils/media";
 import { useState } from "react";
 import { Loader2, Upload } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 export default function MediaUpload() {
   const { addMediaItem, currentUser } = useStore();
@@ -16,11 +17,27 @@ export default function MediaUpload() {
     
     try {
       setIsProcessing(true);
+      toast({
+        title: "Processing",
+        description: "Your media is being processed...",
+      });
+
       const mediaItem = await processMediaFile(file, currentUser?.id);
       addMediaItem(mediaItem);
+      
+      toast({
+        title: "Upload Complete",
+        description: "Your media has been processed successfully!",
+      });
+      
       setIsProcessing(false);
     } catch (error) {
       console.error("Error processing media:", error);
+      toast({
+        title: "Upload Error",
+        description: "There was a problem processing your media. Please try again.",
+        variant: "destructive",
+      });
       setIsProcessing(false);
     }
   };

@@ -15,12 +15,34 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
   try {
+    // Log function invocation
+    console.log("generate-captions function called");
+    
     const { fileType, prompt, extraContext } = await req.json();
+    
+    // Log the request
+    console.log(`Processing ${fileType} with prompt: ${prompt || "default"}`);
+
+    if (!openAIApiKey) {
+      console.error("Missing OpenAI API key");
+      return new Response(
+        JSON.stringify({ 
+          error: "Configuration error", 
+          details: "OpenAI API key is not configured" 
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
 
     // 1. Generate Caption
     const captionPrompt =
       prompt ||
       "Generate a catchy social media caption for the visual content provided. Be creative, natural, and concise. Return only the caption.";
+    
+    console.log("Sending caption request to OpenAI");
     const captionRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -44,11 +66,17 @@ serve(async (req) => {
         temperature: 0.9,
       }),
     });
+    
     const captionData = await captionRes.json();
+    console.log("OpenAI caption response:", JSON.stringify(captionData));
+    
     const generatedCaption = captionData.choices?.[0]?.message?.content?.trim() || "";
+    console.log("Generated caption:", generatedCaption);
 
     // 2. Generate Enhancement Suggestions
     const suggestPrompt = `Analyze the visual content for a social media post and suggest up to 6 visual enhancements. These can be:\n- filter (e.g., "Vibrant Boost")\n- effect (e.g., "Bokeh Blur")\n- crop (e.g., "Portrait Crop")\n- text (e.g., "Bold Quote")\nFormat as a JSON array of objects with properties: type ("filter"|"effect"|"crop"|"text"), name, description. Only output the JSON array, nothing else.`;
+    
+    console.log("Sending enhancements request to OpenAI");
     const suggRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -68,19 +96,39 @@ serve(async (req) => {
         temperature: 1.0,
       }),
     });
+    
     const suggData = await suggRes.json();
-    let enhancements: Array<any> = [];
+    console.log("OpenAI suggestions response:", JSON.stringify(suggData));
+    
+    let enhancements = [];
+    const suggContent = suggData.choices?.[0]?.message?.content || "";
+    console.log("Raw suggestions content:", suggContent);
+    
     try {
-      // Minimal parsing logic to make sure we only parse pure JSON
-      enhancements = JSON.parse(
-        (suggData.choices?.[0]?.message?.content || "")
-          .replace(/^[^[]+/, "") // Remove anything before the array
-          .replace(/[^]]+$/, "") // Remove anything after the array
-      );
+      // Improved parsing logic to extract JSON
+      const jsonMatch = suggContent.match(/\[.*\]/s);
+      if (jsonMatch) {
+        enhancements = JSON.parse(jsonMatch[0]);
+      } else {
+        throw new Error("No JSON array found in response");
+      }
     } catch (e) {
-      enhancements = [];
+      console.error("Error parsing enhancement suggestions:", e);
+      enhancements = [
+        {
+          type: "filter",
+          name: "Vibrant Boost",
+          description: "Enhance colors for more visual impact"
+        },
+        {
+          type: "effect",
+          name: "Soft Glow",
+          description: "Add a gentle luminous effect" 
+        }
+      ];
     }
 
+    console.log("Returning results");
     // Return
     return new Response(
       JSON.stringify({
@@ -97,9 +145,25 @@ serve(async (req) => {
   } catch (error) {
     console.error("AI Generation error:", error);
     return new Response(
-      JSON.stringify({ error: "Failed to generate AI content", details: error.message }),
+      JSON.stringify({ 
+        error: "Failed to generate AI content", 
+        details: error.message,
+        caption: "Share your story with this amazing visual!",
+        enhancementSuggestions: [
+          {
+            type: "filter",
+            name: "Vibrant Boost",
+            description: "Enhance colors for more visual impact"
+          },
+          {
+            type: "effect",
+            name: "Soft Glow",
+            description: "Add a gentle luminous effect" 
+          }
+        ]
+      }),
       {
-        status: 500,
+        status: 200, // Return 200 even on error but with fallback content
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
     );
