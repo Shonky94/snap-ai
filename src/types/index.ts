@@ -4,6 +4,8 @@ export interface MediaItem {
   fileUrl: string;
   fileType: 'image' | 'video';
   caption: string;
+  // Optional BLIP-2 image analysis text for display
+  imageDescription?: string;
   enhancementSuggestions: EnhancementSuggestion[];
   createdAt: number;
   userId?: string;

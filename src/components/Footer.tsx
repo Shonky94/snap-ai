@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 
 export default function Footer() {
   return (
-    <div className="container max-w-7xl pb-16 pt-8">
+    <div className="w-full px-8 md:px-12 lg:px-16 xl:px-20 pb-16 pt-8">
       <Card className="p-6 text-center bg-accent">
         <h2 className="text-2xl font-bold mb-4">Ready to take your social media to the next level?</h2>
         <p className="mb-6 text-muted-foreground">

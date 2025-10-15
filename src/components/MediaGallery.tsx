@@ -5,7 +5,13 @@ import { EnhancementSuggestion, MediaItem } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Trash2, Edit } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  AlertDialog as Dialog,
+  AlertDialogContent as DialogContent,
+  AlertDialogHeader as DialogHeader,
+  AlertDialogTitle as DialogTitle,
+  AlertDialogFooter as DialogFooter
+} from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDistanceToNow } from "date-fns";
@@ -18,17 +24,17 @@ interface MediaPreviewProps {
 
 const MediaPreview = ({ item }: MediaPreviewProps) => {
   return (
-    <div className="h-60 overflow-hidden rounded-t-md border border-border">
+    <div className="h-32 overflow-hidden rounded-t-md border border-border bg-gray-100">
       {item.fileType === 'image' ? (
         <img
           src={item.fileUrl}
           alt="Preview"
           className="h-full w-full object-cover"
+          loading="lazy"
         />
       ) : (
         <video
           src={item.fileUrl}
-          controls
           className="h-full w-full object-cover"
         />
       )}
@@ -73,39 +79,28 @@ const MediaCard = ({ item }: MediaCardProps) => {
   };
   
   return (
-    <Card className="overflow-hidden transition-all duration-300 hover:shadow-md fade-in-up hover-scale">
+    <Card className="overflow-hidden transition-all duration-300">
       <MediaPreview item={item} />
-      <CardHeader className="p-4">
-        <div className="flex justify-between items-start">
-          <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">
-              {formatDistanceToNow(item.createdAt, { addSuffix: true })}
-            </p>
-            <CardTitle className="text-lg font-medium">
-              {item.caption || "No caption available"}
-            </CardTitle>
-          </div>
+      <CardHeader className="p-3">
+        <div className="space-y-1">
+          <p className="text-xs text-muted-foreground">
+            {formatDistanceToNow(item.createdAt, { addSuffix: true })}
+          </p>
+          <CardTitle className="text-sm font-medium line-clamp-2">
+            {item.caption || "No caption"}
+          </CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="p-4 pt-0">
-        <EnhancementPreview suggestions={item.enhancementSuggestions} />
-      </CardContent>
-      <CardFooter className="p-4 pt-0 flex justify-end gap-2">
+      <CardFooter className="p-3 pt-0 flex justify-end gap-2">
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
-          onClick={() => setIsEditDialogOpen(true)}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDelete();
+          }}
         >
-          <Edit className="h-4 w-4 mr-1" />
-          Edit
-        </Button>
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={handleDelete}
-        >
-          <Trash2 className="h-4 w-4 mr-1" />
-          Delete
+          <Trash2 className="h-3 w-3" />
         </Button>
       </CardFooter>
       
@@ -131,9 +126,14 @@ const MediaCard = ({ item }: MediaCardProps) => {
   );
 };
 
-export default function MediaGallery() {
+interface MediaGalleryProps {
+  onMediaSelect?: (mediaItem: MediaItem) => void;
+  selectedMediaId?: string | null;
+}
+
+export default function MediaGallery({ onMediaSelect, selectedMediaId }: MediaGalleryProps) {
   const { mediaItems } = useStore();
-  
+
   if (mediaItems.length === 0) {
     return (
       <Card className="w-full">
@@ -145,47 +145,35 @@ export default function MediaGallery() {
       </Card>
     );
   }
-  
-  return (
-    <div className="w-full">
-      <Tabs defaultValue="all">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Your Media</h2>
-          <TabsList>
-            <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="images">Images</TabsTrigger>
-            <TabsTrigger value="videos">Videos</TabsTrigger>
-          </TabsList>
+
+  // Helper to render selectable media cards
+  const renderMediaCards = (items: MediaItem[]) => (
+    <div className="grid grid-cols-1 gap-4">
+      {items.map(item => (
+        <div
+          key={item.id}
+          className={
+            `cursor-pointer transition-all rounded-lg ${selectedMediaId === item.id ? 'ring-2 ring-primary shadow-lg' : 'hover:shadow-md'}`
+          }
+          onClick={() => {
+            try {
+              if (onMediaSelect && item) {
+                onMediaSelect(item);
+              }
+            } catch (err) {
+              console.error('Error selecting media:', err);
+            }
+          }}
+        >
+          <MediaCard item={item} />
         </div>
-        
-        <TabsContent value="all">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mediaItems.map(item => (
-              <MediaCard key={item.id} item={item} />
-            ))}
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="images">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mediaItems
-              .filter(item => item.fileType === 'image')
-              .map(item => (
-                <MediaCard key={item.id} item={item} />
-              ))}
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="videos">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mediaItems
-              .filter(item => item.fileType === 'video')
-              .map(item => (
-                <MediaCard key={item.id} item={item} />
-              ))}
-          </div>
-        </TabsContent>
-      </Tabs>
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="w-full max-h-[500px] overflow-y-auto">
+      {renderMediaCards(mediaItems)}
     </div>
   );
 }
