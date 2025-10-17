@@ -6,6 +6,8 @@ export interface MediaItem {
   caption: string;
   // Optional BLIP-2 image analysis text for display
   imageDescription?: string;
+  suggestedEmojis?: string[];
+  emojisPlaced?: boolean;
   enhancementSuggestions: EnhancementSuggestion[];
   createdAt: number;
   userId?: string;

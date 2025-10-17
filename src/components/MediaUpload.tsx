@@ -19,7 +19,7 @@ export default function MediaUpload({ onFileSelect }: MediaUploadProps) {
   const { toast } = useToast();
 
   const handleFile = async (file: File) => {
-    if (!file) return;
+    if (!file || isProcessing) return;
 
     // Call the callback if provided
     if (onFileSelect) {
@@ -69,12 +69,14 @@ export default function MediaUpload({ onFileSelect }: MediaUploadProps) {
     e.stopPropagation();
     setDragActive(false);
 
+    if (isProcessing) return;
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       handleFile(e.dataTransfer.files[0]);
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isProcessing) return;
     if (e.target.files && e.target.files.length > 0) {
       handleFile(e.target.files[0]);
     }

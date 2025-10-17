@@ -3,6 +3,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 export interface CaptionResponse {
   caption: string;
   image_description: string;
+  suggested_emojis: string[];
   success: boolean;
   error?: string;
 }
@@ -33,10 +34,13 @@ export async function checkBackendHealth(): Promise<HealthResponse> {
 /**
  * Generate Instagram caption from image file
  */
-export async function generateCaption(imageFile: File): Promise<CaptionResponse> {
+export async function generateCaption(imageFile: File, imageDescription?: string): Promise<CaptionResponse> {
   try {
     const formData = new FormData();
     formData.append('file', imageFile);
+    if (imageDescription) {
+      formData.append('image_description', imageDescription);
+    }
 
     const response = await fetch(`${API_BASE_URL}/generate-caption`, {
       method: 'POST',

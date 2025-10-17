@@ -172,7 +172,7 @@ export default function MediaGallery({ onMediaSelect, selectedMediaId }: MediaGa
   );
 
   return (
-    <div className="w-full max-h-[500px] overflow-y-auto">
+    <div className="w-full h-full overflow-y-auto">
       {renderMediaCards(mediaItems)}
     </div>
   );

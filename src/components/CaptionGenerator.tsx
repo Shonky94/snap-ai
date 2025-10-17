@@ -41,6 +41,7 @@ export function CaptionGenerator({ imageFile, imageUrl }: CaptionGeneratorProps)
   }, [imageUrl, mediaItems]);
 
   const handleGenerate = async () => {
+    if (isGenerating) return;
     if (!imageFile && !imageUrl) {
       setError('Please upload an image first');
       return;
@@ -62,7 +63,7 @@ export function CaptionGenerator({ imageFile, imageUrl }: CaptionGeneratorProps)
         throw new Error('No image available');
       }
 
-      const result: CaptionResponse = await generateCaption(fileToSend);
+  const result: CaptionResponse = await generateCaption(fileToSend, imageDescription || undefined);
       setCaption(result.caption);
       setImageDescription(result.image_description);
 

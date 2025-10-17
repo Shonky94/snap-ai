@@ -35,22 +35,24 @@ import { generateCaption as fetchAICaption } from "@/services/captionService";
 
 
 // Generate AI caption using backend API
-export const generateCaption = async (file: File): Promise<{ caption: string; imageDescription?: string }> => {
+export const generateCaption = async (file: File): Promise<{ caption: string; imageDescription?: string; suggestedEmojis?: string[] }> => {
   const response = await fetchAICaption(file);
-  return { caption: response.caption, imageDescription: response.image_description };
+  return { caption: response.caption, imageDescription: response.image_description, suggestedEmojis: response.suggested_emojis };
 };
 
 // Process file to create media item with AI suggestions
 export const processMediaFile = async (file: File, userId?: string): Promise<MediaItem> => {
   const fileUrl = await createFileUrl(file); // Now async - converts to base64
   const fileType = getFileType(file);
-  const { caption, imageDescription } = await generateCaption(file);
+  const { caption, imageDescription, suggestedEmojis } = await generateCaption(file);
   return {
     id: generateId(),
     fileUrl,
     fileType,
     caption,
     imageDescription,
+    suggestedEmojis,
+    emojisPlaced: false,
     enhancementSuggestions: [], // Not used, backend only returns captions
     createdAt: Date.now(),
     userId

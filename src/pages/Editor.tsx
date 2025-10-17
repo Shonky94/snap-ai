@@ -133,8 +133,8 @@ export default function Editor() {
       <main className="w-full px-4 md:px-6 py-6 h-[calc(100vh-72px)] overflow-hidden">
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 h-full">
           {/* Left Sidebar - Upload & Gallery */}
-          <aside className="xl:col-span-2 space-y-6 h-full overflow-hidden">
-            <Card className="p-4">
+          <aside className="xl:col-span-2 space-y-6 h-full overflow-hidden flex flex-col">
+            <Card className="p-4 flex-shrink-0">
               <h3 className="font-semibold mb-4 flex items-center gap-2 text-sm">
                 <UploadIcon className="h-4 w-4 text-purple-600" />
                 Upload Image
@@ -142,9 +142,9 @@ export default function Editor() {
               <MediaUpload onFileSelect={handleFileSelect} />
             </Card>
             
-            <Card className="p-4 h-[calc(100%-140px)] overflow-hidden">
-              <h3 className="font-semibold mb-4 text-sm">Your Gallery</h3>
-              <div className="h-[calc(100%-28px)] overflow-y-auto">
+            <Card className="p-4 flex-1 min-h-0 overflow-hidden flex flex-col">
+              <h3 className="font-semibold mb-4 text-sm flex-shrink-0">Your Gallery</h3>
+              <div className="flex-1 min-h-0">
                 <MediaGallery 
                   onMediaSelect={handleMediaSelect} 
                   selectedMediaId={selectedMediaId}
